@@ -8,7 +8,7 @@ import (
 	"beego"
 )
 
-var VesyncLog = newLogger(beego.AppConfig.String("serverName"),beego.AppConfig.String("logFilePath"),time.Duration(time.Hour*24))
+var VesyncLog *zap.Logger
 
 func newLogger(serverName string, logFilePath string, rotationTime time.Duration) *zap.Logger{
 	l := &lumberjack.Logger{Filename: logFilePath, MaxAge: 30, MaxSize: 1024 * 10}
@@ -60,5 +60,9 @@ func newLogger(serverName string, logFilePath string, rotationTime time.Duration
 
 func utcTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 	enc.AppendString(t.UTC().Format("2006-01-02T15:04:05.00000"))
+}
+
+func init() {
+	VesyncLog = newLogger(beego.AppConfig.String("serverName"),beego.AppConfig.String("logFilePath"),time.Duration(time.Hour*24))
 }
 
